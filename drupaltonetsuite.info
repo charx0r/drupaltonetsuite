@@ -1,3 +1,4 @@
-name = drupaltonetsuite
+name = Drupal To Netsuite
 Description = This modules provides basic integration between Drupal and Netsuite
 core = 6.x
+package = Netsuite

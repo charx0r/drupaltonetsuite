@@ -1,0 +1,115 @@
+<?php
+function drupaltonetsuite_help() {
+
+}
+
+function drupaltonetsuite_menu() {
+  $items = array();
+  $items['drupaltonetsuite'] = array(
+    'title' => t('DrupalToNetsuite'),
+    'position' => 'left',
+    'page callback' => 'drupaltonetsuite_all',
+    'access arguments' => array('access netsuitetodrupal'),
+    'description' => t('Main D2N Page'),
+    'type' => MENU_NORMAL_ITEM,
+    );
+  $items['drupaltonetsuite/form'] = array(
+    'title' => t('Create new Lead'),
+    'position' => 'left',
+    'page callback' => 'drupaltonetsuite_form',
+    'access arguments' => array('access netsuitetodrupal'),
+    'description' => t('Create a new Lead'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+function drupaltonetsuite_perm() {
+	return array( 'access netsuitetodrupal' , 'administer netsuitetodrupal');
+}
+
+function drupaltonetsuite_form() {
+  return drupal_get_form('drupaltonetsuite_my_form');
+}
+
+function drupaltonetsuite_my_form($form_state) {
+  $form['name'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Name'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    );
+    $form['name']['first'] = array(
+    '#type' => 'textfield',
+    '#title' => t('First Name'),
+    '#required' => TRUE,
+    '#description' => t('Please your First Name'),
+    '#size' => 20,
+    '#maxlength' => 20,
+    );
+    $form['name']['last'] = array(
+    '#type' => 'textfield',
+    '#title' => t('LastName'),
+    '#required' => TRUE,
+    '#description' => t('Please Enter yout Last Name'),
+    '#size' => 20,
+    '#maxlength' => 20,
+    );
+    $form['misc'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Miscelleanous Details'),
+    '#collapsible' => TRUE,
+    '#collasped' => FALSE,
+    );
+    $form['misc']['dob'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Date of Birth'),
+    '#description' => t('Enter your Date of Birth in yyyy fromat only'),
+    '#required' => TRUE,
+    '#size' => 20,
+    '#maxlength' => 4,
+    );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+  $form['reset'] = array(
+  '#type' => 'submit',
+  '#value' => 'Reset Form',
+  '#validate' => array('drupaltonetsuite_my_form_validate'),
+  );
+  return $form;
+  
+}
+
+function drupaltonetsuite_my_form_clear($form, &$form_state) {
+    $form_state['rebuild'] = TRUE;
+}
+
+//Form Validation
+ function drupaltonetsuite_my_form_validate($form, &$form_state) {
+  $first_name = $form_state['values']['first'];
+  $last_name = $form_state['values']['last'];
+  $year_of_birth = $form_state['values']['dob'];
+  if (!$first_name)
+  form_set_error('first' , 'Please enter First Name');
+  if (!$last_name)
+  form_set_error('last', 'Please Enter Last Name');
+  if ($year_of_birth && ($year_of_birth < 1900 || $year_of_birth > 2000)) {
+    form_set_error('dob', 'Enter a year between 1900 and 2000.');
+  }
+  }
+  
+function drupaltonetsuite_my_form_submit($form, &$form_state) {
+	$first_name = $form_state['values']['first'];
+	$last_name = $form_state['values']['last'];
+	$dob = $form_state['values']['dob'];
+    drupal_set_message(t('The form has been submitted.<br>FirstName is:').$first_name.t('<br>LastName is: ').$last_name);
+}  
+
+function drupaltonetsuite_all() {
+global $base_url;
+	$link = "http://www.google.com";
+	$test = "This module lets the you integrate netsuite with drupal<br>It provides basic functionality such a creating leads,assigning territories,etc<br><a href=".$base_url."/drupaltonetsuite/form>Create a New Lead</a>";
+	return $test;
+}
