@@ -1,0 +1,43 @@
+<?php
+/** 
+* Implemenation of hook_install
+**/
+
+function drupaltonetsuite_install() {
+  drupal_install_schema('drupaltonetsuite');
+}
+
+/** 
+* Implementation of hook_uninstall()
+**/
+
+function drupaltonetsuite_uninstall() {
+	drupal_uninstall_schema('drupaltonetsuite');
+}
+
+/** 
+* Implementation of hook_schema()
+**/
+
+function drupaltonetsuite_schema() {
+	$schema['drupaltonetsuite'] = array (
+	'description' => t("Stores the netsuite Admin Credentials"),
+	'fields' => array (
+		'netsuite_uid' => array(
+		'description' => t("Unique Login Name for netsuite"),
+		'type' => 'varchar',
+		'length' => 255,
+		'not null' => TRUE,
+		'default' => '',
+		),
+		'password' => array (
+		'description' => t('The password for the associated netswuite account'),
+		'type' => 'varchar',
+		'length' => 64,
+		),
+	),
+	'primary key' => array ( 'netsuite_uid'),
+	);
+	return $schema;
+		
+}
