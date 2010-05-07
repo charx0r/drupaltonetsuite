@@ -3,6 +3,10 @@ function drupaltonetsuite_help() {
 
 }
 
+/*
+* Implementing hook_menu()
+*/
+
 function drupaltonetsuite_menu() {
   $items = array();
   $items['drupaltonetsuite'] = array(
@@ -21,16 +25,35 @@ function drupaltonetsuite_menu() {
     'description' => t('Create a new Lead'),
     'type' => MENU_NORMAL_ITEM,
   );
+  $items['admin/settings/drupaltonetsuite'] = array(
+    'title' => 'DrupalToNetsuite',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drupaltonetsuite_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'drupaltonetsuite.admin.inc',
+    );
   return $items;
 }
+
+/*
+*Implementing hook_perm()
+*/
 
 function drupaltonetsuite_perm() {
 	return array( 'access netsuitetodrupal' , 'administer netsuitetodrupal');
 }
 
+/*
+*Implementing hook_form()
+*/
 function drupaltonetsuite_form() {
   return drupal_get_form('drupaltonetsuite_my_form');
 }
+
+/*
+* Creating the Leads Form, TODO: Let the admin create this form using formbuilder
+*/
 
 function drupaltonetsuite_my_form($form_state) {
   $form['name'] = array(
@@ -103,6 +126,10 @@ function drupaltonetsuite_my_form($form_state) {
   
 }
 
+/*
+* Reseting the Leads Form
+*/
+
 function drupaltonetsuite_my_form_clear($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
 }
@@ -120,6 +147,9 @@ function drupaltonetsuite_my_form_clear($form, &$form_state) {
     form_set_error('dob', 'Enter a year between 1900 and 2000.');
   }
   }
+/*
+* TODO: Post data to Netsuite from the Form
+*/
   
 function drupaltonetsuite_my_form_submit($form, &$form_state) {
 	$first_name = $form_state['values']['first'];
@@ -127,6 +157,9 @@ function drupaltonetsuite_my_form_submit($form, &$form_state) {
 	$dob = $form_state['values']['dob'];
     drupal_set_message(t('The form has been submitted.<br>FirstName is:').$first_name.t('<br>LastName is: ').$last_name);
 }  
+/*
+* Creating a netsuite page with all the features available to the admin
+*/
 
 function drupaltonetsuite_all() {
 global $base_url;
