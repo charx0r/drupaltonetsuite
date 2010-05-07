@@ -35,7 +35,7 @@ function drupaltonetsuite_form() {
 function drupaltonetsuite_my_form($form_state) {
   $form['name'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Name'),
+    '#title' => t('Personal Details'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     );
@@ -55,19 +55,40 @@ function drupaltonetsuite_my_form($form_state) {
     '#size' => 20,
     '#maxlength' => 20,
     );
-    $form['misc'] = array(
+    $form['name']['email'] = array (
+    '#type' => 'textfield',
+    '#title' => t('Email ID'),
+    '#required' => TRUE,
+    '#description' => t('Please Enter your email address'),
+    '#size' => 20,
+    );
+    $form['name']['phone'] = array (
+    '#type' => 'textfield',
+    '#title' => t('Phone No'),
+    '#required' => TRUE,
+    '#description' => t('Please enter your PhoneNO'),
+    '#size' => 10,
+    '#maxlength' => 10,
+    );
+    $form['company'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Miscelleanous Details'),
+    '#title' => t('Company Details'),
     '#collapsible' => TRUE,
     '#collasped' => FALSE,
     );
-    $form['misc']['dob'] = array(
+    $form['company']['company_name'] = array(
     '#type' => 'textfield',
-    '#title' => t('Date of Birth'),
-    '#description' => t('Enter your Date of Birth in yyyy fromat only'),
+    '#title' => t('Company Name'),
     '#required' => TRUE,
+    '#description' => t('Please enter your Company Name'),
     '#size' => 20,
-    '#maxlength' => 4,
+    '#maxlength' => 20,
+    );
+    $form['company']['address'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Company Address'),
+    '#description' => t('Please enter your Company Address'),
+    '#size' => 5,
     );
   $form['submit'] = array(
     '#type' => 'submit',
@@ -109,7 +130,6 @@ function drupaltonetsuite_my_form_submit($form, &$form_state) {
 
 function drupaltonetsuite_all() {
 global $base_url;
-	$link = "http://www.google.com";
-	$test = "This module lets the you integrate netsuite with drupal<br>It provides basic functionality such a creating leads,assigning territories,etc<br><a href=".$base_url."/drupaltonetsuite/form>Create a New Lead</a>";
-	return $test;
+	$message = "This module lets the you integrate netsuite with drupal<br>It provides basic functionality such a creating leads,assigning territories,adding sales representatives<br><a href=".$base_url."/drupaltonetsuite/form>Create a New Lead</a>";
+	return $message;
 }
