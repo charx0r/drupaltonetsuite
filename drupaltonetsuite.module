@@ -90,7 +90,7 @@ function drupaltonetsuite_my_form($form_state) {
     '#title' => t('Phone No'),
     '#required' => TRUE,
     '#description' => t('Please enter your PhoneNO'),
-    '#size' => 10,
+    '#size' => 20,
     '#maxlength' => 10,
     );
     $form['company'] = array(
@@ -112,6 +112,12 @@ function drupaltonetsuite_my_form($form_state) {
     '#title' => t('Company Address'),
     '#description' => t('Please enter your Company Address'),
     '#size' => 5,
+    );
+    $form['company']['country'] = array (
+    '#type' => 'textfield',
+    '#title' => t('Country'),
+    '#description' => t('Please enter you Country Name'),
+    '#size' => 20,
     );
   $form['submit'] = array(
     '#type' => 'submit',
@@ -143,8 +149,8 @@ function drupaltonetsuite_my_form_clear($form, &$form_state) {
   form_set_error('first' , 'Please enter First Name');
   if (!$last_name)
   form_set_error('last', 'Please Enter Last Name');
-  if ($year_of_birth && ($year_of_birth < 1900 || $year_of_birth > 2000)) {
-    form_set_error('dob', 'Enter a year between 1900 and 2000.');
+  if ($year_of_birth && ($year_of_birth < 1900 || $year_of_birth > 2010)) {
+    form_set_error('dob', 'Enter a year between 1900 and 2010.');
   }
   }
 /*
@@ -152,10 +158,35 @@ function drupaltonetsuite_my_form_clear($form, &$form_state) {
 */
   
 function drupaltonetsuite_my_form_submit($form, &$form_state) {
-	$first_name = $form_state['values']['first'];
-	$last_name = $form_state['values']['last'];
-	$dob = $form_state['values']['dob'];
-    drupal_set_message(t('The form has been submitted.<br>FirstName is:').$first_name.t('<br>LastName is: ').$last_name);
+	//$first_name = $form_state['values']['first'];
+	//$last_name = $form_state['values']['last'];
+	//$dob = $form_state['values']['dob'];
+    //drupal_set_message(t('The form has been submitted.<br>FirstName is:').$first_name.t('<br>LastName is: ').$last_name);
+    	include_once 'PHPtoolkit.php';
+	include_once 'login_info.php';
+	$customerFields = array (
+		'isPerson'		=> false,
+		'firstName'		=> $form_state['values']['first'],
+		'lastName'		=> $form_state['values']['last'],
+		'companyName'		=> $form_state['values']['company_name'],
+		'phone'			=> $form_state['values']['phone'],
+		'email'			=> $form_state['values']['email'],
+		'country' 		=> $form_state['values']['country'],
+		'giveAccess'		=> false,
+		 'entityStatus'         => array('internalId' => '6'),
+	);
+	// create Customer record
+	$customer = new nsComplexObject('Customer');
+	// set fields
+	$customer->setFields($customerFields);
+	// perform add operation and store nsWriteResponse object in $addResponse variable 
+	$addResponse = $myNSclient->add($customer);
+	// handle add response
+	if (!$addResponse->isSuccess) {
+		echo "Lead couldnot be added in netsuite. Error: " .$addResponse->statusDetail[0]->message;		
+	} else {
+		echo "Lead has been successfully added";
+	}
 }  
 /*
 * Creating a netsuite page with all the features available to the admin

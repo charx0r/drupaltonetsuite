@@ -30,7 +30,7 @@ function drupaltonetsuite_admin_settings($form_state) {
 }
 
 /*
-* Pushing to DB
+* Pushing to DB TODO: Insert the password after encrypting!!
 */
 function drupaltonetsuite_admin_settings_submit($form, &$form_state) {
 	 
@@ -39,7 +39,6 @@ function drupaltonetsuite_admin_settings_submit($form, &$form_state) {
   } */
   $username = $form_state['values']['drupaltonetsuite_username'];
   $password = $form_state['values']['drupaltonetsuite_password'];
-  echo "Username:".$username." Password:".$password;
     $query = "INSERT INTO {drupaltonetsuite} (netsuite_uid, password) VALUES ('%s', '%s')";
     $result = db_query($query, $username, $password);
 }
