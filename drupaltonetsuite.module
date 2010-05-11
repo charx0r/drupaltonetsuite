@@ -45,15 +45,31 @@ function drupaltonetsuite_perm() {
 }
 
 /*
-*Implementing hook_form()
-*/
+ * Implementing hook_path()
+ */
+ function drupaltonetsuite_path() {
+   if (function_exists('drupal_get_path')) {
+    // Let drupal set the path
+    $path = drupal_get_path('module', 'drupaltonetsuite');
+  }
+  else {
+    // Fallback to trying to find the path based on PHP's knowledge of our
+    // current path.
+    $path = dirname(__FILE__);
+  }
+  return $path;
+ }
+ 
+/*
+ *Implementing hook_form()
+ */
 function drupaltonetsuite_form() {
   return drupal_get_form('drupaltonetsuite_my_form');
 }
 
 /*
-* Creating the Leads Form, TODO: Let the admin create this form using formbuilder
-*/
+ * Creating the Leads Form, TODO: Let the admin create this form using formbuilder
+ */
 
 function drupaltonetsuite_my_form($form_state) {
   $form['name'] = array(
@@ -133,8 +149,8 @@ function drupaltonetsuite_my_form($form_state) {
 }
 
 /*
-* Reseting the Leads Form
-*/
+ * Reseting the Leads Form
+ */
 
 function drupaltonetsuite_my_form_clear($form, &$form_state) {
     $form_state['rebuild'] = TRUE;
@@ -154,16 +170,25 @@ function drupaltonetsuite_my_form_clear($form, &$form_state) {
   }
   }
 /*
-* TODO: Post data to Netsuite from the Form
-*/
+ * TODO: Post data to Netsuite from the Form
+ */
   
 function drupaltonetsuite_my_form_submit($form, &$form_state) {
 	//$first_name = $form_state['values']['first'];
 	//$last_name = $form_state['values']['last'];
 	//$dob = $form_state['values']['dob'];
     //drupal_set_message(t('The form has been submitted.<br>FirstName is:').$first_name.t('<br>LastName is: ').$last_name);
-    	include_once 'PHPtoolkit.php';
-	include_once 'login_info.php';
+    	include_once (drupaltonetsuite_path().'/PHPtoolkit.inc');
+    	$myNSclient = new nsClient( nsHost::live );
+	$email = "spuvala@argusoft.com";
+	$password = "argusadmin!";
+	$account = "TSTDRV658597";
+	$role = "3";
+
+	// set request level credentials. (email, password, account#, internal id of role)
+	$myNSclient->setPassport($email, $password, $account, $role);
+
+	//include_once (drupaltonetsuite_path().'/login_info.inc');
 	$customerFields = array (
 		'isPerson'		=> false,
 		'firstName'		=> $form_state['values']['first'],
@@ -171,9 +196,9 @@ function drupaltonetsuite_my_form_submit($form, &$form_state) {
 		'companyName'		=> $form_state['values']['company_name'],
 		'phone'			=> $form_state['values']['phone'],
 		'email'			=> $form_state['values']['email'],
-		'country' 		=> $form_state['values']['country'],
+		//'country' 		=> $form_state['values']['country'],
 		'giveAccess'		=> false,
-		 'entityStatus'         => array('internalId' => '6'),
+		'entityStatus'         => array('internalId' => '6'),
 	);
 	// create Customer record
 	$customer = new nsComplexObject('Customer');
@@ -189,8 +214,8 @@ function drupaltonetsuite_my_form_submit($form, &$form_state) {
 	}
 }  
 /*
-* Creating a netsuite page with all the features available to the admin
-*/
+ * Creating a netsuite page with all the features available to the admin
+ */
 
 function drupaltonetsuite_all() {
 global $base_url;
